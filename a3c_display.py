@@ -16,6 +16,13 @@ from constants import RMSP_ALPHA
 from constants import GRAD_NORM_CLIP
 from constants import USE_GPU
 from constants import USE_LSTM
+from argparse import ArgumentParser
+
+arg_parser = ArgumentParser(description='The launchpad for all performance scripts.')
+arg_parser.add_argument('-ia', "--num_intra_threads", help='The intra size', type=int, dest="intra", default=0)
+arg_parser.add_argument('-ie', "--num_inter_threads", help='The inter size', type=int, dest="inter", default=0)
+intra = arg_parser.parse_args().intra
+inter = arg_parser.parse_args().inter
 
 def choose_action(pi_values):
   return np.random.choice(range(len(pi_values)), p=pi_values)  
@@ -36,8 +43,10 @@ grad_applier = RMSPropApplier(learning_rate = learning_rate_input,
                               epsilon = RMSP_EPSILON,
                               clip_norm = GRAD_NORM_CLIP,
                               device = device)
-
-sess = tf.Session()
+config = tf.ConfigProto(allow_soft_placement=True,
+                        intra_op_parallelism_threads=intra,inter_op_parallelism_threads=inter)
+sess = tf.Session(config=config)
+# sess = tf.Session()
 init = tf.global_variables_initializer()
 sess.run(init)
 

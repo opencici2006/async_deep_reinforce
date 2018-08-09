@@ -29,8 +29,8 @@ from constants import USE_LSTM
 from argparse import ArgumentParser
 
 arg_parser = ArgumentParser(description='The launchpad for all performance scripts.')
-arg_parser.add_argument('-ia', "--num_intra_threads", help='The intra size', type=int, dest="intra", default=56)
-arg_parser.add_argument('-ie', "--num_inter_threads", help='The inter size', type=int, dest="inter", default=2)
+arg_parser.add_argument('-ia', "--num_intra_threads", help='The intra size', type=int, dest="intra", default=0)
+arg_parser.add_argument('-ie', "--num_inter_threads", help='The inter size', type=int, dest="inter", default=0)
 intra = arg_parser.parse_args().intra
 inter = arg_parser.parse_args().inter
 
