@@ -26,7 +26,13 @@ from constants import RMSP_ALPHA
 from constants import GRAD_NORM_CLIP
 from constants import USE_GPU
 from constants import USE_LSTM
+from argparse import ArgumentParser
 
+arg_parser = ArgumentParser(description='The launchpad for all performance scripts.')
+arg_parser.add_argument('-ia', "--num_intra_threads", help='The intra size', type=int, dest="intra", default=56)
+arg_parser.add_argument('-ie', "--num_inter_threads", help='The inter size', type=int, dest="inter", default=2)
+intra = arg_parser.parse_args().intra
+inter = arg_parser.parse_args().inter
 
 def log_uniform(lo, hi, rate):
   log_lo = math.log(lo)
@@ -72,7 +78,8 @@ for i in range(PARALLEL_SIZE):
 
 # prepare session
 sess = tf.Session(config=tf.ConfigProto(log_device_placement=False,
-                                        allow_soft_placement=True))
+                                        allow_soft_placement=True,
+                                        intra_op_parallelism_threads=int(intra/PARALLEL_SIZE/2), inter_op_parallelism_threads=inter))
 
 init = tf.global_variables_initializer()
 sess.run(init)
